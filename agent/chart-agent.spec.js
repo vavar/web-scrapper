@@ -1,7 +1,9 @@
+'use strict';
+
 const ChartAgent = require('./chart-agent');
 
-describe('Agent: Chart', () => {
-    var fixture;
+describe('Class: ChartAgent', () => {
+    let fixture;
     it('when construct without `DataStore`, should throw exception', () => {
         try {
             fixture = new ChartAgent();
@@ -10,7 +12,7 @@ describe('Agent: Chart', () => {
         }
     });
 
-    describe('parseContent()', () => {
+    describe('Method: parseContent()', () => {
         beforeEach(() => {
             fixture = new ChartAgent({});
         });
@@ -22,8 +24,8 @@ describe('Agent: Chart', () => {
         });
     });
 
-    describe('onQueryResponse()', () => {
-        var responseObj;
+    describe('Method: onQueryResponse()', () => {
+        let responseObj;
         beforeEach(() => {
             fixture = new ChartAgent({put:()=>{}});
             responseObj = {statusCode:200,headers:{},on:()=>{},setEncoding:()=>{}};
@@ -47,7 +49,7 @@ describe('Agent: Chart', () => {
             fixture.onQueryResponse(responseObj);
 
             expect(responseObj.on).toHaveBeenCalled();
-            var spyCalls = responseObj.on.calls;
+            let spyCalls = responseObj.on.calls;
             expect(spyCalls.count()).toBe(2);
             expect(spyCalls.argsFor(0)[0]).toBe('data');
             expect(spyCalls.argsFor(1)[0]).toBe('end');
@@ -62,5 +64,7 @@ describe('Agent: Chart', () => {
         });
     });
 
-    describe('onQuerySuccess()');
+    describe('Method: onQuerySuccess()',()=>{
+
+    });
 });
