@@ -44,10 +44,10 @@ class ChartAgent {
         this.db.getLastUpdateTime().then(function (data) {
             if (data && data.length) {
                 self.lastUpdateTime = +data[0].value;
-            }else {
+            } else {
                 self.db.initLastUpdateTime();
             }
-            process.nextTick(function() { self.queryData(); self = null; });
+            process.nextTick(function () { self.queryData(); self = null; });
         })
     }
 
@@ -108,6 +108,7 @@ class ChartAgent {
         if (!content || !content.data || !content.data.length) {
             return;
         }
+        let self = this;
         let truncate = content.data.filter((element) => {
             if (!this.lastUpdateTime) {
                 this.lastUpdateTime = element.x;
@@ -124,7 +125,7 @@ class ChartAgent {
         });
 
         // no update data
-        if ( !truncate.length ) {
+        if (!truncate.length) {
             logger.info('no data updated ... ');
             //periodically scrape data every 5 mins
             logger.info('scheduling for next 5 mins ...');
@@ -133,16 +134,15 @@ class ChartAgent {
         }
 
         let data = truncate.map((value) => {
-            return { 'name': 'nasdaq', 'date': new Date(value.x), 'value': ''+value.y };
+            return { 'name': 'nasdaq', 'date': new Date(value.x), 'value': '' + value.y };
         });
 
-        
-        let self = this;
+
         this.db.storeChartData({ lastUpdateTime: this.lastUpdateTime, data: data }).then(function () {
             //periodically scrape data every 5 mins
             logger.info('scheduling for next 5 mins ...');
             setTimeout(function () { self.queryData(); self = null; }, 5 * 60 * 1000);
-        }).catch( function(err){
+        }).catch(function (err) {
             logger.info(`${err}`);
         });
     }

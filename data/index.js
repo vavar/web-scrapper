@@ -1,4 +1,11 @@
 const Database = require('./data');
-module.exports = function (options,callback) {
-    return new Database(options,callback);
+const instance;
+module.exports = {
+    init: function (options, callback) {
+        instance = new Database(options, callback);
+        return instance;
+    },
+    instance: function (params) {
+        return instance;
+    }
 }

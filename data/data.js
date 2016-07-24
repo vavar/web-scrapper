@@ -95,6 +95,15 @@ class Database {
         });
     }
 
+    getChartData(){
+        let knex = this.knex;
+        return knex(TABLE_STOCK).count('date as count').then(function(offset){
+            return knex.column('date', 'value').select()
+                    .from(TABLE_STOCK).where({name:'nasdaq'})
+                    .orderBy('date', 'asc').limit(50).offset(offset[0].count  - 50);
+        }) 
+
+    }
     getLastUpdateTime() {
         let knex = this.knex;
         return knex(TABLE_AGENT).where({ name: AGENT_CONFIG_LASTUPDATE }).select('value');

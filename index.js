@@ -2,7 +2,12 @@
 
 const Database = require('./data');
 const Agent = require('./agent').ChartScraperAgent;
-const app = require('./app');
+const stockService = require('./app');
+
+//-------------------------------
+// Expess config
+//-------------------------------
+const port = process.env.PORT || 8080; 
 
 //-------------------------------
 // Logging config
@@ -24,7 +29,8 @@ const knexOptions = {
 };
 
 
-Database({renew: false, knexConfig: knexOptions}, function (db) {
+Database.init({renew: false, knexConfig: knexOptions}, function (db) {
   let agent = new Agent(db);
   agent.start();
+  stockService.start(db,port);
 })
