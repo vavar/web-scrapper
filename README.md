@@ -10,14 +10,32 @@ by gather data from target website with web scraping technique.
 
 ## Installation
 
-run following command at project root folder
+run following command at project's root folder
 - npm install
 
 ## Usage
 
-run project with following command
-- npm start
+### Run
+run project with following command:
+- `npm start` - server will be running on port 8080
 
-unit tesing with following command
-- npm test
+### Unit Testing
+unit tesing with following command:
+- `npm test` - invoke jasmine testing framework
 
+## API
+while server is running, 
+you can access Stock index data from following APIs:
+
+### RESTful Service
+- `/api/chart` - get latest stock index for 50 records
+- `/api/chart/:amount` - get latest stock index for :amount records
+
+
+### Data Model Example
+
+````
+{
+   data: [ { x: date-time , y : index-value } , ...]
+}
+````
