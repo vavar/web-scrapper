@@ -37,14 +37,13 @@ class Database {
         Promise.all([
             this.createAgentTable(renew),
             this.createStockTable(renew)
-        ]).then(function () {
+        ]).then(function (res) {
             if (callback) {
                 callback(self);
                 self = null;
                 callback = null;
             }
         });
-
     }
 
     initLastUpdateTime() {
@@ -57,7 +56,7 @@ class Database {
      *  create Agent Config table
      */
     createAgentTable(renew) {
-        var knex = this.knex;
+        let knex = this.knex;
         return knex.schema.hasTable(TABLE_AGENT).then(function (result) {
             if (!result) {
                 return knex.schema.createTableIfNotExists(TABLE_AGENT, function (table) {
@@ -95,20 +94,43 @@ class Database {
         });
     }
 
-    getChartData(){
-        let knex = this.knex;
-        return knex(TABLE_STOCK).count('date as count').then(function(offset){
-            return knex.column('date', 'value').select()
-                    .from(TABLE_STOCK).where({name:'nasdaq'})
-                    .orderBy('date', 'asc').limit(50).offset(offset[0].count  - 50);
-        }) 
+    /**
+     * retrive data for front-end
+     */
+    getChartData(options) {
+        let _options = options || {};
+        let _size = +_options.size || 50;
+        
+        _size = Math.min(_size,400);
 
+        logger.info('Front-end Query size = ',_size);
+        let knex = this.knex;
+        return knex(TABLE_STOCK).count('date as count').then(function (offset) {
+            return knex.column('date', 'value')
+                .select()
+                .from(TABLE_STOCK)
+                .where({ name: 'nasdaq' })
+                .orderBy('date', 'asc')
+                .limit(_size)
+                .offset(offset[0].count - _size)
+                .map(function (element) {
+                    return { x: element.date, y: element.value };
+                });
+        });
     }
+
+    /**
+     * query time from last scraping
+     */
     getLastUpdateTime() {
         let knex = this.knex;
         return knex(TABLE_AGENT).where({ name: AGENT_CONFIG_LASTUPDATE }).select('value');
     }
 
+    /**
+     * store data from agent
+     * @param obj : { data : [], lastUpdateTime: datetime }
+     */
     storeChartData(obj) {
         let knex = this.knex;
         let self = this;
