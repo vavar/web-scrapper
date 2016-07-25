@@ -46,6 +46,8 @@ you can access Stock index data from following APIs:
 - `knex` - SQL Query Builder
 - `bluebird` - Javascript promise library
 - `jasmine` - Unit testing framework
+- `express` - RESTful web service provider
+- `body-parser` - URL extractor
 
 ## Service Mechanism
 - `agent` - Data Crawler which fetch data from [target website](http://www.nasdaq.com) every 5 minutes
